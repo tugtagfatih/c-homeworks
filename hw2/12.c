@@ -3,12 +3,12 @@
 #define EXPECTED_NUMBERS_OF_VALUE 200 /*There can be a maximum of 200 errors in a data file containing 50 entries, so I set this to 200, but if more data is to be entered, the number must be increased.*/
 
 int main(){
-    int menuinput, exitflag =0, x,y,c;
+    int menuinput, exitflag =0, x,y,c, bestx, besty, bestR1,bestR2, bestR3, bestR4, check_part2=0;
     FILE *datafile;
     char char1;
     while(!exitflag){
-        printf ("-------------homework 2 menu---------------\n\n");
-        printf ("1-Part 1\n2-Part 2\n3-Part 3\n4- Exit \nPlease select a program: ");
+        printf ("\n-------------homework 2 menu---------------\n\n");
+        printf ("1-Explore Data1\n2-Train Model\n3-Test Model\n4- Exit \nPlease select a program: ");
         scanf ("%d", &menuinput);
 
         if (menuinput==1){
@@ -32,18 +32,20 @@ int main(){
             fclose(datafile);
         }
         else if (menuinput==2){
-            int count_for_percent, state, dx, dy, bestx, besty,R1,R2,R3,R4,bestR1, bestR2, bestR3, bestR4, error_count,line_count, best_error=EXPECTED_NUMBERS_OF_VALUE;
-            
+            int count_for_percent, state, dx, dy,R1,R2,R3,R4,error_count,line_count=0, best_error=EXPECTED_NUMBERS_OF_VALUE;
+            check_part2=1;
+
             /*calculating number of lines*/
             datafile =fopen("data.txt", "r");
             while (fscanf(datafile, "%*[^\n]%*c") != EOF) {
                 line_count++;
             }
             fclose(datafile);
-
-            for (int i =0;i<= MAX_VALUE;i++){ /*this loop for all of the dx values*/
+            int i=0;
+            for (i;i<= MAX_VALUE;i++){ /*this loop for all of the dx values*/
                 dx = i;
-                for( int j =0; j<= MAX_VALUE ; j++){ /*this loop for all of the dy values*/
+                int j=0;
+                for(j; j<= MAX_VALUE ; j++){ /*this loop for all of the dy values*/
                     dy=j;
                     for(state=0; state <15; state++){ /*this loop for all combinations of spaces*/
                         error_count=0;
@@ -81,14 +83,85 @@ int main(){
                         bestR2= R2;
                         bestR3= R3;
                         bestR4= R4;
+                        besty=dy;
+                        bestx=dx;
                     }
                     fclose(datafile);
                 }                    
             }
             int error_percent=((best_error*100)/line_count);
-            printf("Best success rate is: %d%% and best classes is: R1=%d R2=%d R3=%d R4=%d \n", 100-error_percent, bestR1, bestR2, bestR3, bestR4);
+            printf("Best success rate is: %d%% and best classes is: R1=%d R2=%d R3=%d R4=%d \nBest value for x: %d and best value for y: %d ", 100-error_percent, bestR1, bestR2, bestR3, bestR4, bestx,besty);
         }
         else if (menuinput==3){
+            
+            int m3_errorcount=0, m3_linecount=0, m3_menu;
+
+            if (check_part2==1){/*That value ​​is checked to check that the best values ​​have already been found by the artificial intelligence model. check if it is not working.*/
+
+                printf("1- Test 1 file \n2- Test final file \nPlease select a program: ");
+                scanf("%d", &m3_menu);
+                if(m3_menu==1){
+                    FILE *testfile; 
+                    /*calculating number of lines*/
+                    testfile =fopen("test 1.txt", "r");
+                    while (fscanf(testfile, "%*[^\n]%*c") != EOF) {
+                        m3_linecount++;
+                    }
+                    fclose(testfile);
+
+                    testfile = fopen ("test 1.txt", "r");
+                    while (fscanf(testfile, "%d %d %d", &x, &y, &c) == 3){
+                        if(bestx<=x && besty>y){
+                            printf("Class of numbers %d , %d ,class is %d predict is %d \n", x, y, c, bestR1);
+                            if(c!=bestR1){
+                                printf("Wrong Predict. \n");
+                                m3_errorcount++;
+                            }
+                            else printf("Predicted Successfully \n");
+                        }  
+                        if(bestx>x && besty>y){
+                            printf("Class of numbers %d , %d ,class is %d predict is %d \n", x, y, c, bestR2);
+                            if(c!=bestR2){
+                                printf("Wrong Predict. \n");
+                                m3_errorcount++;
+                            }
+                            else printf("Predicted Successfully \n");
+                        }
+                        if(bestx<=x && besty<=y){ 
+                            printf("Class of numbers %d , %d ,class is %d predict is %d \n", x, y, c, bestR3);
+                            if(c!=bestR3){
+                                printf("Wrong Predict. \n");
+                                m3_errorcount++;
+                            }
+                            else printf("Predicted Successfully \n");
+                        }
+                        if(bestx>x && besty<=y){
+                            printf("Class of numbers %d , %d ,class is %d predict is %d \n", x, y, c, bestR4);
+                            if(c!=bestR4){
+                                printf("Wrong Predict. \n");
+                                m3_errorcount++;
+                            }
+                            else printf("Predicted Successfully \n");
+                        }
+                    }
+                    fclose(testfile);
+                    double success_rate;
+                    success_rate = (double)m3_errorcount/ (double) m3_linecount;
+                    printf("error: %d line: %d", m3_errorcount, m3_linecount);
+                    printf("Success Rate is: %.2f \n", success_rate*100);
+                }
+                if(m3_menu==2){
+                    FILE *testfinalfile;
+                    testfinalfile=fopen("test-final.txt", "r");
+                    while (fscanf(testfinalfile, "%d %d", &x, &y) == 2) {
+                        if(bestx<=x && besty>y) printf("Class of numbers %d , %d must be %d \n", x, y, bestR1);
+                        if(bestx>x && besty>y) printf("Class of numbers %d , %d must be %d \n", x, y, bestR2);
+                        if(bestx<=x && besty<=y) printf("Class of numbers %d , %d must be %d \n", x, y, bestR3);
+                        if(bestx>x && besty<=y) printf("Class of numbers %d , %d must be %d \n", x, y, bestR4);
+                    }
+                }
+            }
+                
         }
         else if (menuinput==4){exitflag=1;}
         else{printf("Incorrect input. Please try again \n");}

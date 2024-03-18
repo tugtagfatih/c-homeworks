@@ -3,10 +3,13 @@ char first_initial(FILE *filef, int id, char letter);
 char last_initial(FILE *filef, int id, char letter);
 int get_id_fi();
 int get_id_li();
-int average_grade();
+int average_grade(int flag, FILE *filef);
 
 int main(){
     int exitflag=0, id, midterm1, midterm2, final,course_id,department;
+    double midterm_average=0, final_average=0, st_midterm;
+    int exam_count=0,midterm_sum=0, final_sum=0;
+    midterm1 =-1, midterm2=-1, final=-1;
     
     FILE *firstfile;
     FILE *secondfile;
@@ -17,27 +20,11 @@ int main(){
         switch(menuinput){
         /*CASE P ----------------------------- CASE P */
         case 'p':
-            double midterm_average=0, final_average=0, st_midterm;
-            int exam_count=0,midterm_sum=0, final_sum=0;
-            midterm1 =-1, midterm2=-1, final=-1;
-            firstfile=fopen("first.txt", "r");
+            midterm_average = average_grade(0, firstfile);
+            final_average = average_grade(1, firstfile);
+            firstfile=fopen("first 1.txt", "r");
             while(fscanf(firstfile, "%d;%d;%d;%d;%d", &id, &midterm1, &midterm2,&final,&course_id)==5){
-                midterm_sum= midterm_sum+st_midterm;
-                final_sum = final_sum+final;
-                exam_count++;
-            }
-            while (fscanf(firstfile, "%d;%d;%d;%d",&id,&midterm1,&final,&course_id)==4){
-                midterm_sum = midterm_sum+midterm1;
-                final_sum = final_sum+final;
-                exam_count++;
-            }
-            midterm_average = ((double)midterm_sum+(double)exam_count)/2;
-            final_average = ((double)final_sum) / ((double)exam_count);
-            printf("Midterm Average: %f Final average %f\n", midterm_average ,final_average);
-            fclose(firstfile);
-            firstfile=fopen("first.txt", "r");
-            while(fscanf(firstfile, "%d;%d;%d;%d;%d", &id, &midterm1, &midterm2,&final,&course_id)==5){
-                st_midterm=((double)midterm1/(double)midterm2)/2;
+                st_midterm=((double)midterm1+(double)midterm2)/2;
                 if((st_midterm < 40 && st_midterm < midterm_average) && (final <40 && final< final_average)){
                     printf("Student id: %d, Him/Her Midterm Average: %f, Final: %d, Him/Her Grade is: F - Fail \n", id, st_midterm, final);
                 }
@@ -72,12 +59,50 @@ int main(){
                     printf("Student id: %d, Him/Her Midterm Average: %f, Final: %d, Him/Her Grade is: A - 4 - Success \n", id, st_midterm, final);
                 }
             }
+            fclose(firstfile);
             break;
             /*CASE N ----------------------------- CASE N*/
             case 'n':
+            break;
+
+            case 'g':
+                midterm_average = average_grade(0, firstfile);
+                final_average = average_grade(1, firstfile);
+                printf("Midterm Average: %f Final average %f\n", midterm_average ,final_average);
+
+            break;
 
 
         }
 
     }
+}
+
+int average_grade(int flag, FILE *filef){
+    int exitflag=0, id, midterm1, midterm2, final,course_id,department;
+    double midterm_average=0, final_average=0, st_midterm;
+    int exam_count=0,midterm_sum=0, final_sum=0;
+    midterm1 =-1, midterm2=-1, final=-1;
+    filef=fopen("first 1.txt", "r");
+    if (filef == NULL) {
+        printf("Error opening file.\n");
+        return 0;
+    }
+
+    while(fscanf(filef, "%d;%d;%d;%d;%d", &id, &midterm1, &midterm2,&final,&course_id)==5){
+        midterm_sum= (midterm_sum+st_midterm)/2;
+        final_sum = final_sum+final;
+        exam_count++;
+    }
+    while (fscanf(filef, "%d;%d;%d;%d",&id,&midterm1,&final,&course_id)==4){
+        midterm_sum = midterm_sum+midterm1;
+        final_sum = final_sum+final;
+        exam_count++;
+    }
+    midterm_average = ((double)midterm_sum) / ((double)exam_count);
+    final_average = ((double)final_sum) / ((double)exam_count);
+    fclose(filef);
+    if(flag==1) return final_average;
+    if(flag==0) return midterm_average;
+    else printf("Error");
 }

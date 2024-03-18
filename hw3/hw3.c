@@ -107,7 +107,7 @@ void initalize_game(){
             i++;
             j++;
             if ((loopv>=5 && loopv<=11 && i >=5 && j==5) || (loopv>=5 && loopv<=11 && i >=5 && j==11) || ((loopv==5 || loopv==11) && (i ==5 || (j<=11 && j >=5)))){
-                int two_creator = rand() %6; /*There are 24 different squares where the numbers 2 can appear, and since there should be 4, I give the probability 1/6.*/
+                int two_creator = rand() %8; /*There are 24 different squares where the numbers 2 can appear, and since there should be 4, I give the probability 1/6.*/
                 two_max--;
                 if (two_counter<=2 && (two_creator == 5 || two_max <=3)){ /*checks all last 3 characters and if there are fewer '2' characters than the number of remaining spaces, it fills the remaining spaces with '2'*/
                     lab[i] = '2';

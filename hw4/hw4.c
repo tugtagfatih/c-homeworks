@@ -2,8 +2,8 @@
 
 char first_initial(FILE * id_fp, int id);
 char last_initial(FILE * id_fp, int id);
-int get_id_fi();
-int get_id_li();
+int get_id_fi(FILE * id_fp, char first_initial);
+int get_id_li(FILE * id_fp, char first_initial);
 int all_average(int flag, int check_for_courseid, int courseid);
 void print_grades(int id, int midterm1, int midterm2, int final);
 
@@ -14,6 +14,10 @@ int main() {
     char menuinput, firstletter, tempchar;
     FILE * firstfile;
     FILE * secondfile;
+    printf("first initial t  = %c \n", (first_initial(secondfile, 220015011))); /* works perfectly*/
+    printf("last initial  m = %c\n", (last_initial(secondfile, 220015011)));
+    printf("get id fi 220015006   = %d\n", get_id_fi(secondfile, 'd'));
+    printf("get id li 220015004   = %d\n", get_id_li(secondfile, 'l' ));
     while (!exitflag) {
         if (!menu_printed) {
             printf("\n -------------------------------------------------------------------------\n");
@@ -226,19 +230,17 @@ void print_grades(int id, int midterm1, int midterm2, int final) {
 
 char first_initial(FILE * id_fp, int id){
     char tempchar;
-    int readed_id, nextcharflag;
+    int readed_id, nextcharflag=0;
     id_fp = fopen("second 1.txt", "r");
     while (fscanf(id_fp, "%d", & readed_id) == 1) {
         while (fscanf(id_fp, "%c", & tempchar) != EOF && tempchar != '\n') {
             if (id == readed_id){
-                if (nextcharflag =1) return tempchar;
+                if (nextcharflag ==1) return tempchar;
                 if(tempchar == ';') nextcharflag++;
             }
         }
     }
     fclose(id_fp);
-    menu_printed = 0;
-    break;
 }
 
 char last_initial(FILE * id_fp, int id){
@@ -246,24 +248,43 @@ char last_initial(FILE * id_fp, int id){
     int readed_id, nextcharflag=0, count=0;
     id_fp = fopen ("second 1.txt", "r");
     while (fscanf(id_fp, "%d", & readed_id) == 1) {
-        while (fscanf(id_fp, "%c", &tempchar2) != EOF && tempchar != '\n') {
-            if (nextcharflag == 1) return tempchar2;
-            while (fscanf(id_fp, "%c", &tempchar2) != EOF && tempchar != '\n') {
-                if (id == readed_id){
-                    if(tempchar == ';' && count == 0 ) count++;
-                    if(tempchar2 == ';' && count == 0 ) count++;
-                    if(tempchar2 == ';' && count ==1 ) return tempchar;
-                    if(tempchar == ';' && count ==1 ) nextcharflag++;
-                }
+        while (fscanf(id_fp, "%c", &tempchar) != EOF && tempchar != '\n') {
+            if (nextcharflag==1) return tempchar;
+            if (count==1 && tempchar == ';') nextcharflag++;
+            if(count==0 && tempchar== ';') count++;
+        }
+    }
+    fclose(id_fp);
+}
+
+int get_id_fi (FILE * id_fp, char first_initial){
+    int id, nextcharflag=0, count=0;
+    char tempchar;
+    id_fp = fopen("second 1.txt", "r");
+    while (fscanf(id_fp, "%d", &id) == 1) {
+        while (fscanf(id_fp, "%c", &tempchar) != EOF && tempchar != '\n') {
+            if (first_initial==tempchar && count ==1) return id;
+            if (tempchar == ';') count++;
+            
+        }
+    }
+    fclose(id_fp);
+}
+
+int get_id_li (FILE * id_fp, char first_initial){
+    int id, count=0, nextcharflag=0;
+    char tempchar, tempchar2;
+    id_fp = fopen("second 1.txt", "r");
+    while (fscanf(id_fp, "%d", &id) == 1) {
+        while (fscanf(id_fp, "%c", &tempchar) != EOF && tempchar != '\n') {
+            if (nextcharflag == 1) return id;
+            while (fscanf(id_fp, "%c", &tempchar2) != EOF && tempchar2 != '\n') {
+                if(tempchar == ';' && count == 0 ) count++;
+                if(tempchar2 == ';' && count == 0 ) count++;
+                if(tempchar2 == ';' && count ==1 ) return id;
+                if(tempchar == ';' && count ==1 ) nextcharflag++;
             }
         }
     }
-}
-
-char get_id_fi (FILE * id_fp, char first_initial){
-    
-}
-
-char get_id_li (FILE * id_fp, char first_initial){
-
+    fclose(id_fp);
 }

@@ -2,9 +2,9 @@
 
 #define MAX_TEXT_SIZE 500
 #define NUMBER_OF_NEWS 4
+#define MAX_MAGIC_NUMBERS 20
 
 int newslist[NUMBER_OF_NEWS];
-
 void fill_newslists() {
     int i = 0;
     FILE * readed_ids;
@@ -12,6 +12,54 @@ void fill_newslists() {
     while (fscanf(readed_ids, "%d", & newslist[i]) != EOF) {
         i++;
     }
+}
+
+int fx(int x){
+    int y;
+    y= ((x*x*x) - (x*x) +2);
+    return y;
+}
+int gx(int x){
+    int y;
+    y=(x*x);
+    return y;
+}
+
+void scan_the_magic_numbers(int news){
+    FILE *file;
+    int i,count=0, total=0;
+    int magic_numbers[MAX_MAGIC_NUMBERS];
+    if (news==1) file =fopen("news/1.txt" ,"r");
+    else if (news==2) file =fopen("news/2.txt" ,"r");
+    else if (news==3) file =fopen("news/3.txt" ,"r");
+    else if (news==4) file =fopen("news/4.txt" ,"r");
+    char line[MAX_TEXT_SIZE];
+    while (fgets(line, MAX_TEXT_SIZE, file) != NULL) {
+        for (i=0; i<MAX_TEXT_SIZE; i++){
+            if (line[i]=='#'){
+                magic_numbers[count]= line[i+1] - '0';
+                count++;
+            }
+        }
+    }
+    for (i=0; i<count; i++){
+        total=total+gx(fx(magic_numbers[i]));
+    }
+    printf ("//////////////////////Second Experiment Key = %d/////////////////////\n", total);    
+    fclose(file);
+}
+
+int end_of_the_program(){
+    int flag;
+    char choice;
+        printf("Do you want to continue? Yes(y)/No(n): ");
+        scanf(" %c", &choice);
+        if (choice == 'N' || choice == 'n') flag = 1;
+        else if (choice == 'Y' || choice == 'y') {
+            flag = 0;
+        } else printf("Wrong imput program will be terminated Good Bye!");
+
+        return flag;
 }
 
 void print_first_line(FILE * file) {
@@ -126,11 +174,6 @@ void menu_a() {
 
 void menu() {
     fill_newslists();
-    int pp;
-    for (pp = 0; pp < NUMBER_OF_NEWS; pp++) {
-        printf("%d", newslist[pp]);
-    }
-
     int exitflag = 0, print_menu_option = 1;
     int read_checker[NUMBER_OF_NEWS];
     char choice, menuinput, line[MAX_TEXT_SIZE];
@@ -156,24 +199,30 @@ void menu() {
         getchar();
         if (menuinput == 'a') {
             menu_a();
+            exitflag=end_of_the_program();
         } else if (menuinput == 'b') {
             int i, check;
             for (i = 0; i <= NUMBER_OF_NEWS; i++) {
                 check = check_readed(i);
                 if (check) printf("%d. new is readed \n", i);
             }
+            exitflag=end_of_the_program();
         } else if (menuinput == 'c') {
-
+            int number_for_c;
+            printf("Which news would you like to decrypt?:");
+            scanf("%d", &number_for_c);
+            FILE *file;
+            if (number_for_c==1) file =fopen("news/1.txt" ,"r");
+            else if (number_for_c==2) file =fopen("news/2.txt" ,"r");
+            else if (number_for_c==3) file =fopen("news/3.txt" ,"r");
+            else if (number_for_c==4) file =fopen("news/4.txt" ,"r");
+            print_all_page(file);
+            scan_the_magic_numbers(number_for_c);
+            exitflag=end_of_the_program();
         } else {
-
+            printf("Wrong input ");
+            exitflag=end_of_the_program();
         }
-        printf("Do you want to continue? Yes(y)/No(n): ");
-        scanf("%c", & choice);
-        if (choice == 'N' || choice == 'n') exitflag = 1;
-        else if (choice == 'Y' || choice == 'y') {
-            exitflag = 0;
-            print_menu_option = 1;
-        } else printf("Wrong imput program will be terminated Good Bye!");
     }
 }
 

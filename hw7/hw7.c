@@ -46,11 +46,11 @@ void gamePlay(int board[2][7]){
         cup=0;
         if (turn == 1){
             printf("Player's turn\n");
-            while (cup < 1 || cup > 6){
+            while (cup < 1 || cup > 6 || board[0][cup-1]==0){
                 printf("Please enter the cup number you want to move: ");
                 scanf("%d", &cup);
                 getchar();
-                if (cup < 1 || cup > 6){
+                if (cup < 1 || cup > 6 || board[0][cup-1]==0){
                     printf("Invalid cup number\n");
                 }
             }
@@ -101,10 +101,10 @@ void gamePlay(int board[2][7]){
 }
 
 int move(int board[2][7],int cup,int turn){
-    int i,j, n, result;
+    int i,j, n, result, bos;
     int otherplayer=0;
     i = cup;
-    if (turn == 1){
+    if (turn == 1){ /*TURN1 TURN1 TURN1 TURN1 TURN1 TURN1 TURN1 TURN1 TURN1 TURN1 TURN1 TURN1 TURN1 TURN1 TURN1 TURN1 TURN1 TURN1*/
         result=2;
         n = board[0][cup-1];
         board[0][cup-1] = 0;
@@ -115,18 +115,31 @@ int move(int board[2][7],int cup,int turn){
             else if (i>=7 && i<13){
                 board[1][i-7] += 1;
             }
-            else n++; /*when i==13*/
+            else j--; /*when i==13*/
             i++;
             if (i == 14) i=0;
         }
         if ((board[0][i] >1 || board[1][i-7] >1)&& i!=7){
-            printf("Next move is: %d\n",i);
+            
             printBoard(board);
+            printf("Next move is: %d\n",i);
             move(board, i, turn);
         }
         else if (i==7){
-            result=1;
+            printBoard(board);
+            while (1){
+                printf("Your turn finished on your big cup. Please Select a cup: ");
+                scanf("%d", &cup);
+                if (cup>0 && cup<7){
+                    if (board[0][cup-1]>=1){
+                        move(board, cup, turn);
+                    }
+                    else printf("Invalid cup number\n");
+                }
+                else printf("Invalid cup number\n");
+            }
         }
+        else printBoard(board);
     }
     if (turn == 2){        
         /*printf("Computer's move: %d\n",cup);*/
@@ -141,7 +154,7 @@ int move(int board[2][7],int cup,int turn){
             else if (i>6 && i<=13){
                 board[1][i-7] += 1;
             }
-            else n++;
+            else j--;
             i++;
             if (i == 14) i=0;
         }
@@ -152,8 +165,8 @@ int move(int board[2][7],int cup,int turn){
             printBoard(board);
             move(board, i, turn);
         }
+        printBoard(board);
     }
-    printBoard(board);
     return result;
 }
 int main(){

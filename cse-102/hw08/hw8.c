@@ -9,7 +9,6 @@
 #define P1_STRING "***++++***++++***"
 #define P2_STRING "+*+*+"
 #define P3_STRING "+**+++****+++**+"
-/*#define P3_STRING "**+*+"*/
 
 void clear_age_spaces(char data[PERSON_NUMBER][5][MAX_VALUE_LENGTH]){
     int i,j, which_level;

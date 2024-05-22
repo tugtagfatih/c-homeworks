@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-
+#define CITIES_STRING "ABCDEFGH"
 
 struct Hospital{
     char *name;
@@ -17,6 +17,8 @@ struct Hospital hospitals[] = {
     {"Hospital - 7", "FE"}
 };
 
+void fill_array_with_zeros(int arr[], int size);
+int string_size(char *str);
 void numHospitals(char cities[], int n);
 int countPaths(int x, int y);
 void part1();
@@ -58,16 +60,25 @@ void part1(){
     printf("Number of different shortest paths: %d\n", numPaths);
 }
 
+int countPaths(int x, int y) {
+    if (x == 1 && y == 1)
+        return 1;
+    
+    int paths = 0;
+    if (x > 0)
+        paths += countPaths(x - 1, y);
+    if (y > 0)
+        paths += countPaths(x, y - 1);
+    
+    return paths;
+}
 
 void part2(){ 
-    char cities[]= "ABCDEFGH";
+    char cities[]= CITIES_STRING;
     int n;
     printf("Enter the number of hospitals: ");
     scanf("%d", &n);
     numHospitals(cities, n);
-
-}
-void part3(){
 
 }
 
@@ -90,46 +101,33 @@ int isAllCitiesServed(struct Hospital hospitals[], int n, int cities[], int numC
 }
 
 void numHospitals(char cities[], int n) {
+    
+    int cityCount = string_size(cities);
+    int citiesServed[cityCount];
+    fill_array_with_zeros(citiesServed, cityCount);
 
-    int citiesServed[8] = {0};
-
-    if (isAllCitiesServed(hospitals, n, citiesServed, 8, 0)) {
+    if (isAllCitiesServed(hospitals, n, citiesServed, cityCount, 0)) {
         printf("All cities are served by at least one hospital.\n");
     } else {
         printf("Not all cities are served by a hospital.\n");
     }
 }
 
+void fill_array_with_zeros(int arr[], int size){
+    int i;
+    for (i = 0; i < size; i++){
+        arr[i] = 0;
+    }
+}
 
+int string_size(char *str){
+    int i = 0;
+    while (str[i] != '\0'){
+        i++;
+    }
+    return i;
+}
 
+void part3(){
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-int countPaths(int x, int y) {
-    if (x == 1 && y == 1)
-        return 1;
-    
-    int paths = 0;
-    if (x > 0)
-        paths += countPaths(x - 1, y);
-    if (y > 0)
-        paths += countPaths(x, y - 1);
-    
-    return paths;
 }

@@ -5,24 +5,6 @@
 #include "customdict.h"
 #define MAX_LINE_LENGTH 44 /* max column numbers in out data.csv file is 43*/
 
-/*union Value {
-    int integer;
-    float f;
-    double d;
-    char c;
-};
-
-struct Item {
-    char* key;
-    union Value* value;
-};
-
-struct CustomDict {
-    struct Item* items;
-    int capacity;
-    int size;
-};*/
-
 struct CustomDict* create_dict() {
     struct CustomDict* dict = (struct CustomDict*)malloc(sizeof(struct CustomDict));
     dict->capacity = 0;
@@ -81,8 +63,6 @@ union Value* search_item(struct CustomDict* dict, char* key) {
     }
     return NULL;
 }
-
-/*BUBBLE SORT*//*AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA*/
 
 void sort_dict(struct CustomDict* dict) {
     int i, j;
